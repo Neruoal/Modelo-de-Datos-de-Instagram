@@ -6,54 +6,52 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
-
+    username: Mapped[str] = mapped_column(String, nullable=False)
+    firstname: Mapped[str] = mapped_column(String, nullable=False)
+    lastname: Mapped[str] = mapped_column(String, nullable=False)
+    email: Mapped[str] = mapped_column(String, nullable=False)
 
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
+            "username": self.username,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "email": self.email
         }
 
-class Product(db.Model):
+class Follower(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(200), unique=True, nullable=False)
-    price: Mapped[float] = mapped_column(Numeric(10,2), nullable=False)
+    user: Mapped[int] = mapped_column(primary_key=True)
+    
 
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name,
-            "price": self.price
+            "user": self.user
         }
     
-class OrderLine(db.Model):
+class Post(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    order_id: Mapped[int] = mapped_column(ForeignKey('order.order_id'), nullable=False)
-    product_id: Mapped[int] = mapped_column(ForeignKey('product.id'), nullable=False)
-    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "order_id": self.order_id,
-            "product_id": self.product_id,
-            "quantity": self.quantity
-        }
+    user_id: Mapped[int] = mapped_column(ForeignKey('user.id'), nullable=False)
     
-class Order(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    customer_id: Mapped[int] = mapped_column(ForeignKey('customer.customer.id'), nullable=False)
-    total_amount: Mapped[float] = mapped_column(Numeric(10,2), nullable=False)
-    order_status_id: Mapped[int] = mapped_column(ForeignKey('order_status.order_status_id'), nullable=False)
 
     def serialize(self):
         return {
             "id": self.id,
-            "customer_id": self.order_id,
-            "product_id": self.product_id,
-            "quantity": self.quantity
+            "user_id": self.user_id,
+        }
+
+class Comment(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    comment_text: Mapped[str] = mapped_column(String(200), nullable=True)
+    author_id: Mapped[int] =
+    post_id: Mapped[int] =
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "comment_text": self.comment_text,
+            "author_id": self.author_id,
+            "post_id": self.post_id
         }
