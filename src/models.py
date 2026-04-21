@@ -51,8 +51,8 @@ class Post(db.Model):
 class Comment(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     comment_text: Mapped[str] = mapped_column(String(200), nullable=True)
-    author_id: Mapped[int] = mapped_column(Intege, nullable=False)
-    post_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    author_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.id') nullable=False)
+    post_id: Mapped[int] = mapped_column(Integer, ForeignKey('post.id') nullable=False)
 
     def serialize(self):
         return {
@@ -66,7 +66,7 @@ class Media (db.model):
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[MediaType] = mapped_column(SQLAlchemyEnum(MediaType), nullable=False)
     url: Mapped[str] = mapped_column(String, unique=True)
-    post_id: Mapped[int] = mapped_column(Integer, unique=True)
+    post_id: Mapped[int] = mapped_column(Integer, ForeignKey('post.id') unique=True)
 
     def serialize(self):
         return {
